@@ -7,7 +7,7 @@ Spawns one vehicle, steps the simulation by hand, prints its kinematics.
 
 import carla
 import math
-
+import time
 
 def main():
     # Actors I create. The finally block destroys everything in here;
@@ -74,6 +74,8 @@ def main():
 
         # 400 ticks = 20 s of sim time. Print every 20th = once per sim second.
         for i in range(400):
+            loop_start = time.perf_counter() 
+
             world.tick()
 
             if i % 20 == 0:
@@ -89,6 +91,9 @@ def main():
                 v = vehicle.get_velocity()
                 speed = math.sqrt(v.x**2 + v.y**2 + v.z**2)
                 print(f'Speed: {speed:.2f} m/s')
+
+            elapsed = time.perf_counter() - loop_start
+            time.sleep(max(0.0, 0.05 - elapsed))
 
     finally:
         # Hand the clock back BEFORE destroying anything -- destroy commands
